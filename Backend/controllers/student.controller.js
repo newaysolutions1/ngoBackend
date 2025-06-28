@@ -78,10 +78,10 @@ const getStudentById = async (req, res) => {
 // @access  Private
 const updateStudentById = async (req, res) => {
   const data = req.body;
-  const { video } = req.files;
-
+  const { video } = req.files || {};
 
   try {
+    // Prepare payload
     const payload = {
       name: data.name,
       address: data.address,
@@ -97,14 +97,17 @@ const updateStudentById = async (req, res) => {
       communicationMode: data.communicationMode,
     };
 
+    // If video file is present, update it
+    if (video && video[0]) {
+      payload.video = video[0].filename;
+    }
+
     const student = await Student.findByIdAndUpdate(req.params.id, payload, {
       new: true,
     });
 
     if (!student) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Student not found' });
+      return res.status(404).json({ success: false, message: 'Student not found' });
     }
 
     res.status(200).json({
@@ -114,11 +117,10 @@ const updateStudentById = async (req, res) => {
       data: student,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: ERROR, error: error.message });
+    res.status(500).json({ success: false, message: ERROR, error: error.message });
   }
 };
+
 
 
 const updateStudentStatusById = async (req, res) => {
