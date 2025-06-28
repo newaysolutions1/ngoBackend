@@ -3,7 +3,7 @@ const path = require('path');
 
 const uploadPath = path.join(__dirname, '../upload/students');
 
-// Use Date.now() to avoid duplicate file names
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadPath);
