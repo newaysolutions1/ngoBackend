@@ -8,15 +8,23 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/pdf' || 'application/jpeg' || 'application/jpg' || 'application/mp4') {
+  const allowedTypes = [
+    'application/pdf',
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'video/mp4',
+  ];
+
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Only PDF files are allowed'), false);
+    cb(new Error('Only PDF, image (jpg/png), or mp4 files are allowed'), false);
   }
 };
 
